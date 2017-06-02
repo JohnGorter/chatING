@@ -1,0 +1,135 @@
+<!--
+My-App component
+-->
+<dom-module id="file-reader">
+    <template></template>
+    <script>
+        Polymer({
+            is:'file-reader',
+            properties:{
+                filename:{
+                    type:String, 
+                    observer:'_filenameChanged'
+                },
+                content:{
+                    type:String, 
+                    notify:true
+                }
+            },
+            ready(){
+                this._readFile();
+            },
+            _filenameChanged(){
+                this._readFile();
+            },
+            _readFile(){
+                if (this.filename){
+                    var file = this.filename;
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        console.log('file read');
+                        this.content = event.target.result;
+                    }.bind(this);
+                    reader.readAsDataURL(file);
+                }
+            }
+
+        });
+    </script>
+</dom-module>
+
+
+<dom-module id="dragdrop-container">
+            <template>
+                <div on-drag="_ondrag" on-drop="_ondrop" on-dragover="_ondrag" style="border:2px solid red;justify-content:center;align-items:center;display:flex;width:50px;height:50px;">
+                    <template is="dom-if" if="{{!image}}">
+                    <div>drop here</div>
+                    </template>
+                     <template is="dom-if" if="{{image}}">
+                    <img src="{{image}}" height="50" style="border:2px solid green" />
+                    </template>
+                </div>
+                <file-reader filename="{{file}}" content="{{image}}"></file-reader>
+            </template>
+            <script>
+            Polymer({
+                is:'dragdrop-container',
+                properties:{
+                    file:{
+                        type:String,
+                        value:''
+                    },
+                    image:{
+                        type:String,
+                        value:'',
+                        notify:true
+                    }
+                },
+                
+                  _ondrag(e){ 
+                      e.stopPropagation();
+                      e.preventDefault();
+                      return false;
+                      },
+                  _ondrop(e){ 
+                      console.log('dropped');
+                      this.file = e.dataTransfer.files[0];
+                      e.stopPropagation();
+                      e.preventDefault();
+                      return false;
+                  }                  
+            })
+            </script>
+</dom-module>
+
+
+
+<dom-module id="my-app">
+            <template>
+                <paper-header-panel>
+                    <paper-toolbar>  
+                        <div class="title">Januari</div> 
+                    </paper-toolbar>
+                    <div>
+                        <iron-list items="[[items]]" grid>
+                            <template>
+                                <div style="width:150px;" on-tap="showDialog">    
+                                    <div style="padding:10px;border:1px solid black;"> 
+                                    Day: {{ item.day }}         
+                                    <dragdrop-container image="{{item.image}}"></dragdrop-container>
+                                    </div>
+                                </div>
+                            </template>
+                         </iron-list>
+                         <paper-dialog id="modal" modal>
+                            <p>
+                                <iron-image src="{{selectedImage}}" height="300" width="250"></iron-image>
+                            </p>
+                            <div class="buttons">
+                                <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                            </div>
+                            </paper-dialog>
+                    </div>
+                </paper-header-panel>
+            </template>
+            <script>
+            Polymer({
+              is:'my-app',
+              properties:{
+                  items:{
+                      type:Array,
+                      value:[]
+                  }
+              },
+              ready(){
+                  for (var i = 0 ; i < 31; i++)
+                      this.push('items', {dayIndex:i, image:''});
+              },
+              showDialog(){
+                  var item = event.model.item;
+                  this.selectedImage = item.image;
+                  this.$.modal.open();
+              }
+            })
+            </script>
+</dom-module>

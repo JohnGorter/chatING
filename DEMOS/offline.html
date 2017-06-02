@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+         <link rel="import" href="/bower_components/polymer/polymer.html" />
+          <link rel="manifest" href="/manifest.json">
+        <link rel="import" href="/bower_components/app-storage/app-network-status-behavior.html" />
+        <link rel="import" href="./bower_components/platinum-sw/platinum-sw-elements.html">
+    </head>
+    <body>
+         
+   
+
+
+        <dom-module id="my-app">
+            <template>
+                   <platinum-sw-register auto-register>
+                        <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache>
+                    </platinum-sw-register>
+
+               are we online? {{ online }}
+            </template>
+            <script>
+            Polymer({
+              is:'my-app',
+              behaviors:[Polymer.AppNetworkStatusBehavior]
+            })
+            </script>
+        </dom-module>
+        
+        
+        <my-app></my-app>
+
+    </body>
+</html>

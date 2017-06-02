@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+        <link rel="import" href="/bower_components/polymer/polymer.html" />
+        <link rel="import" href="/bower_components/iron-elements/iron-elements.html" />
+
+    </head>
+    <body>
+    <dom-module id="my-app">
+        <template>
+            <mail-details>Loading......</mail-details>
+            <button on-tap="load">Show the mail details..</button>
+        </template>
+        <script>
+        Polymer({
+          is:'my-app',
+          properties:{
+              
+          },
+          load(){
+             // setTimeout(() =>{
+                  this.importHref(this.resolveUrl('mail-details.html'));
+             // }, 5000); 
+          }
+        })
+        </script>
+    </dom-module>
+    <my-app></my-app>
+    </body>
+</html>

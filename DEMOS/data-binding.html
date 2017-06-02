@@ -1,0 +1,60 @@
+<html>
+    <head>
+         <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/polymer/polymer.html"/>
+    </head>
+    <body>
+        <dom-module id="todo-element">
+           <template>
+               <style>
+               .done { text-decoration: line-through } 
+               </style>
+               <template is="dom-repeat" items="[[items]]">
+                   <div on-tap="selectItem" class$="{{_isDone(item.done)}}"> {{item.title}} {{item.done}} </div>
+               </template>
+               <array-selector id="selector" items="{{items}}" selected="{{selectedItem}}"></array-selector>
+               <button on-tap="AddItem">Add a new item</button>
+                <hr>  {{selectedItem.title}}  <br/> {{selectedItem.done}}
+                <button on-tap="setDone">Done</button>
+
+                <p>Thanx for adding {{ lastAdded.title }} </p>
+           </template>
+            <script>
+                var i = 0;
+            Polymer({
+              is:'todo-element',
+              observers:['_arrayChanges(items.splices)'],
+              properties:{
+                  selectedItem:{  type:Object,  notify:true
+                  },
+                  lastAdded: { type:Object, value:{}},
+                  items:{
+                      type:Array,
+                      value:[   { title:'let dog out', description:'', done:false }  ]
+                  }
+              },
+              selectItem(){ this.$.selector.select(event.model.item) },
+              _isDone(i) { return (i ? "done" : ""); },
+              _itemschanged(){  console.log('items changed');  },
+              AddItem(){  this.push('items', { title:'another' + (i++), done:false, description:'whatever'})},
+              setDone(){  this.set('selectedItem.done',true); },
+              _arrayChanges(a){ console.log('a', a);
+                  if (a)
+                  this.lastAdded = a.indexSplices[0].object[a.indexSplices[0].index];
+              }
+            });
+            </script>
+        </dom-module>
+        <dom-module id="my-app">
+            <template>
+              <todo-element></todo-element>
+            </template>
+            <script>
+            Polymer({
+              is:'my-app',
+            });
+            </script>
+        </dom-module>
+        <my-app></my-app>
+
+    </body>
+</html>

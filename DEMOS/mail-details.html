@@ -1,0 +1,18 @@
+
+ <dom-module id="mail-details">
+            <template>
+                 <app-route pattern="/:page" route="{{route}}" data="{{routeData}}"></app-route>
+
+                    <h1>MAIL COMPONENT PAGE </h1>
+                   <iron-pages selected="home" attr-for-selected="name">
+                         <div name="home">Page 1</div>
+                        <div name="techs">Page 2</div>
+                  </iron-pages>
+                
+            </template>
+            <script>
+            Polymer({
+              is:'mail-details'
+            })
+            </script>
+</dom-module>

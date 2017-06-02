@@ -1,0 +1,105 @@
+<html>
+    <head>
+          <link rel="import" href="/bower_components/polymer/polymer.html" />
+        <link rel="import" href="/bower_components/iron-elements/iron-elements.html" />
+        <link rel="import" href="/bower_components/google-web-components/google-web-components.html" />
+    </head>
+    <body>
+        <dom-module id="todo-element">
+           <template>
+               <style>
+               .done { text-decoration: line-through } 
+               </style>
+               <template is="dom-repeat" items="[[items]]" filter="filter" observe="{{triggers}}">
+                   <div on-tap="selectItem" class$="{{_isDone(item.done)}}"> {{item.title}} {{item.done}} </div>
+               </template>
+
+               <array-selector id="selector" items="{{items}}" selected="{{selectedItem}}"></array-selector>
+               <button on-tap="AddItem">Add a new item</button>
+                <hr>  {{selectedItem.title}}  <br/> {{selectedItem.done}}
+                <button on-tap="setDone">Done</button>
+
+                <h3>Add a new todo</h3>
+                Title: <input type="text" value="{{todo.title::change}}" />
+                Description: <input type="text" value="{{todo.description::change}}" />
+                <button on-tap="save">Save todo</button>
+
+                <!--<iron-localstorage name="todos" value="{{items}}"
+                 on-iron-localstorage-load-empty="initItems"
+                ></iron-localstorage>-->
+
+                <!--<iron-ajax id="gettodos" auto url="/data/todos" handle-as="json" last-response="{{items}}"></iron-ajax>
+
+                 <iron-ajax id="posttodo" url="/data/todos" method="POST" body="{{todo}}" handle-as="json" content-type="application/json"></iron-ajax>-->
+                 <firebase-app
+                    name="todoapp"
+                    api-key="AIzaSyDyzdR_qn6CX1fX0P1155kdR3njcujDgmk"
+                    auth-domain="todoapp-7013c.firebaseapp.com"
+                    database-url="https://todoapp-7013c.firebaseio.com"
+                 ></firebase-app>
+
+              <firebase-query
+                    id="query"
+                    app-name="todoapp"
+                    path="/todos"
+                    data="{{items}}">
+                </firebase-query>
+
+                <p>Thanx for adding {{ lastAdded.title }} </p>
+           </template>
+            <script>
+                var i = 0;
+            Polymer({
+              is:'todo-element',
+              observers:['_arrayChanges(items.splices)'],
+              properties:{
+                  selectedItem:{  type:Object,  notify:true
+                  },
+                  lastAdded: { type:Object, value:{}},
+                  triggers:{
+                      type:String, 
+                      value:'done'
+                  },
+                  items:{
+                      type:Array
+                  },
+                  todo:{
+                      type:Object,
+                      value:{}
+                  }
+              },
+              initItems() { this.items = [];}, 
+              selectItem(){ 
+                  this.$.selector.select(event.model.item) 
+              },
+              _isDone(i) { return (i ? "done" : ""); },
+              _itemschanged(){  console.log('items changed');  },
+              save(){ 
+                this.$.posttodo.generateRequest();
+                this.$.gettodos.generateRequest();
+              },
+              setDone(){  this.set('selectedItem.done',true); },
+              _arrayChanges(a){ console.log('a', a);
+                  if (a)
+                  this.lastAdded = a.indexSplices[0].object[a.indexSplices[0].index];
+              },
+              filter(a){
+                      return !a.done;
+              }
+            });
+            </script>
+        </dom-module>
+        <dom-module id="my-app">
+            <template>
+              <todo-element></todo-element>
+            </template>
+            <script>
+            Polymer({
+              is:'my-app',
+            });
+            </script>
+        </dom-module>
+        <my-app></my-app>
+
+    </body>
+</html>

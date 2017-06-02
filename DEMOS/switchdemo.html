@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+        <!--<script>window.ShadyDOM = { force: true };</script>
+        <script src="./bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
+       <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/polymer/polymer.html"/>
+      <!--<link rel="import" href="/bower_components/polymer/polymer.html" />-->
+    </head>
+    <body>
+       <h1>Page header</h1>
+        <dom-module id="my-switch">
+            <template>
+                <content select="[selected]"></content>
+            </template>
+            <script>
+                Polymer({
+                    is:'my-switch',
+                    properties:{
+                        condition:{ 
+                            observer:'_conditionChanged' 
+                        }
+                    },
+                    _conditionChanged(){
+                        var casecount = 0;
+                        var cases = this.queryAllEffectiveChildren("my-case");
+                        for (var case_el in cases) {
+                            if (cases[case_el].qualify(this.condition)) casecount++;
+                        }
+                        this.queryEffectiveChildren("my-default").qualify(casecount);
+                    }
+                });
+            </script>
+        </dom-module>
+         <dom-module id="my-default">
+            <template>
+                <content></content>
+            </template>
+            <script>
+                Polymer({
+                    is:'my-default',
+                    properties:{
+                        selected:{
+                            reflectToAttribute:true,
+                            type:Boolean
+                        },
+                        case:{
+                            reflectToAttribute:true
+                        }
+                    },
+                    qualify(val){
+                      
+                        this.selected = val == 0;
+                        return this.selected;
+                    }
+                });
+            </script>
+        </dom-module>
+        <dom-module id="my-case">
+            <template>
+                <content></content>
+            </template>
+            <script>
+                Polymer({
+                    is:'my-case',
+                    properties:{
+                        selected:{
+                            reflectToAttribute:true,
+                            type:Boolean
+                        },
+                        case:{
+                            reflectToAttribute:true
+                        }
+                    },
+                    qualify(val){
+                        this.selected = val == this.case;
+                        return this.selected;
+                    }
+                });
+            </script>
+        </dom-module>
+
+        <dom-module id="my-app">
+            <template>
+                Value <input type="text" value="{{val::change}}" /> <br/>
+
+                 <my-switch condition="[[val]]">
+                    <my-case case="1">the value 1</my-case>
+                    <my-case case="2">the value 2</my-case>
+                    <my-case case="3">the value 3</my-case>
+                    <my-case case="4">wee</my-case>
+                    <my-default>Other values</my-default>
+                </my-switch>
+
+            </template>
+            <script>
+                Polymer({
+                    is:'my-app',
+                    properties:{
+                        val:{  type:Number, value:0   }
+                    }
+                });
+            </script>
+        </dom-module>
+
+        <my-app> </my-app>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+         <link rel="import" href="/bower_components/polymer/polymer.html" />
+        <link rel="import" href="/bower_components/iron-elements/iron-elements.html" />
+
+
+    </head>
+    <body>
+        <dom-module id="my-app">
+            <template>
+                username <input type="text" value="{{username::change}}" />
+                your name is: {{username}}
+                
+                <iron-localstorage name="username" value="{{username}}"></iron-localstorage>
+
+            </template>
+            <script>
+            Polymer({
+            is:'my-app'
+            })
+            </script>
+        </dom-module>
+        <my-app></my-app>
+    </body>
+</html>

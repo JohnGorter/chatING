@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">  
+        <link rel="import" href="https://cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/polymer/polymer.html"/>
+    </head>
+     <style>
+            .highlighted > div{ background-color:yellow;}
+     </style>
+    <body>
+    
+        <script>
+            (function(ns){
+             ns.myBehavior = {
+                properties: {
+                    isHL: {
+                            type: Boolean, 
+                            value: false,
+                            notify: true, 
+                            reflectToAttribute:true,
+                            observer: '_highlightChanged'
+                    }
+                },
+                listeners: { click: '_toggleHighlight' },
+                created: function() {
+                    console.log('Highlighting ', this, 'enabled!');
+                },
+                _toggleHighlight: function() { this.isHL = !this.isHL; },
+                registered: function(){
+                    console.log(`registered the behavior`);
+                 },
+                _highlightChanged: function(value) {
+                    this.toggleClass('highlighted', value);
+                }};
+            }((window.johngorter = window.johngorter || {}, window.johngorter.com = window.johngorter.com || {})));
+           
+
+
+            
+        </script>
+       
+        <dom-module id="my-app">
+            <template>
+                
+                <div style="margin:50px;">Hello world</div>
+            </template>
+            <script>
+            Polymer({
+              is:'my-app',
+                behaviors:[johngorter.com.myBehavior],
+                created: function() {  console.log('creted fired!'); },
+                ready: function() { console.log(`ready fired`); },
+                registered: function() { console.log(`registered fired`); },
+                attached: function() { console.log(`attached fired`);},
+                detached: function() { console.log(`detached fired`); },
+                attributeChanged: function(name, type) {
+                    console.log(this.localName + '#' + this.id + ' attribute ' + name +
+                    ' was changed to ' + this.getAttribute(name));
+                }
+            })
+            </script>
+        </dom-module>
+
+        <my-app></my-app>
+        <my-app></my-app>
+        <my-app></my-app>
+        <my-app></my-app>
+        <my-app></my-app>
+    </body>
+</html>
